@@ -17,19 +17,29 @@
                 .addEventListener("click", onBtnAddTaskClick);
             document.getElementById("btnRemoveCompleted")
                 .addEventListener("click", onBtnRemoveClick);
-            attachEventsToTaskList();
+            
+            loadTasksFromStorage();    
         }
-        function attachEventsToTaskList(){
-            var taskList = document.getElementById("olTaskList");
-            for(var i = taskList.children.length-1;i>=0;i--){
-                var taskItem = taskList.children[i];
-                taskItem.addEventListener("click",onTaskItemClick);
+        function loadTasksFromStorage(){
+            var storage = window.localStorage;
+            for(var i=0;i<storage.length;i++){
+                var key = storage.key(i);
+                var taskName = storage.getItem(key);
+                addTaskToList(key,taskName);
             }
         }
+        
         function onBtnAddTaskClick(){
-            var txtTask = document.getElementById("txtTask");
+            var taskName = document.getElementById("txtTask").value;
+            /*Storage*/
+            var key = new Date().getTime().toString();
+            window.localStorage.setItem(key,taskName);
+            addTaskToList(key,taskName);
+        }
+        function addTaskToList(key,taskName){
             var task = document.createElement("li");
-            task.innerHTML = txtTask.value;
+            task.innerHTML = taskName;
+            task.setAttribute("task-id",key);
             task.addEventListener("click",onTaskItemClick);
             document.getElementById("olTaskList").appendChild(task);
         }
@@ -40,10 +50,24 @@
             var taskList = document.getElementById("olTaskList");
             for(var i = taskList.children.length-1;i>=0;i--){
                 var taskItem = taskList.children[i];
-                if (taskItem.classList.contains("completed"))
+                if (taskItem.classList.contains("completed")){
+                    var key = taskItem.getAttribute("task-id");
+                    /*Removing from Storage*/
+                    localStorage.removeItem(key);
                     taskItem.remove();
+                }
             }
         }
+        /*
+        window.localStorage
+            => key/value collection (both key and value should be string)
+            -setItem(key,value)
+            -getItem(key) => value
+            -removeItem(key)
+            -key(index) => key
+            -clear()
+            -length => no of items in the store
+        */
     </script>
 </head>
 <body>
