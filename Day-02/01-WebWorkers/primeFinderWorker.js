@@ -1,8 +1,17 @@
 function startFindingPrimes(start,end){
     var primeCount= 0;
-    for(var i=start;i<=end;i++)
+    for(var i=start;i<=end;i++){
         if (isPrime(i)) ++primeCount;
+        var percentCompletion = ((start + i) / (end - start)) * 100;
+        if (Math.round(percentCompletion) == percentCompletion)
+            self.postMessage({
+                type : "progress",
+                percentCompletion : Math.round(percentCompletion),
+                primeCount : primeCount
+            });
+    }
     var response = {
+        type : "done",
         primeCount : primeCount
     };
     self.postMessage(response);

@@ -18,8 +18,14 @@
 
         function onWorkerMessage(msgEvt){
             var workerResponseData = msgEvt.data;
-            console.log("Data from worker = ", workerResponseData);
-            document.getElementById("divMessages").innerHTML = workerResponseData.primeCount;
+            if (workerResponseData.type === "progress"){
+                document.getElementById("workerProgress").value = workerResponseData.percentCompletion;
+                document.getElementById("divMessages").innerHTML = workerResponseData.percentCompletion + "%" + " " + workerResponseData.primeCount + "prime numbers found";
+            } else {
+
+                document.getElementById("divMessages").innerHTML = workerResponseData.primeCount;
+            }
+
         }
 
         function onFindPrimesClick(){
@@ -42,6 +48,9 @@
     <span>End :</span>
     <input type="text" name="" id="txtEnd">
     <input type="button" value="Find Primes" id="btnFindPrimes">
+    <div>
+        <progress id="workerProgress" min="0" max="100" value="0"></progress>
+    </div>
     <div id="divMessages"></div>
 </body>
 </html>
